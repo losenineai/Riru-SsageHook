@@ -55,17 +55,17 @@ jobs:
         if: success()
         id: prepareArtifact
         run: |
-          releaseName=`ls out/riru-ssagehook-*-release.zip | awk -F '(/|.zip)' '{print $2}'` && echo "::set-output name=releaseName::$releaseName"
-          debugName=`ls out/riru-ssagehook-*-debug.zip | awk -F '(/|.zip)' '{print $2}'` && echo "::set-output name=debugName::$debugName"
-          unzip out/riru-ssagehook-*-release.zip -d riru-ssagehook-release
-          unzip out/riru-ssagehook-*-debug.zip -d riru-ssagehook-debug
+          releaseName=`ls out/SsageHook-*-release.zip | awk -F '(/|.zip)' '{print $2}'` && echo "::set-output name=releaseName::$releaseName"
+          debugName=`ls out/SsageHook-*-debug.zip | awk -F '(/|.zip)' '{print $2}'` && echo "::set-output name=debugName::$debugName"
+          unzip out/SsageHook-*-release.zip -d SsageHook-release
+          unzip out/SsageHook-*-debug.zip -d SsageHook-debug
       - name: Upload release
         uses: actions/upload-artifact@v2
         with:
           name: ${{ steps.prepareArtifact.outputs.releaseName }}
-          path: './riru-ssagehook-release/*'
+          path: './SsageHook-release/*'
       - name: Upload debug
         uses: actions/upload-artifact@v2
         with:
           name: ${{ steps.prepareArtifact.outputs.debugName }}
-          path: './riru-ssagehook-debug/*'
+          path: './SsageHook-debug/*'
