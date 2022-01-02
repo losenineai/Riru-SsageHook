@@ -49,8 +49,10 @@ void *hack_thread(void *arg)
      */
 
     // 通过 基地址计算得到 地址指针
+    // - 测试结果 可行
     unsigned long hack_addr = base_addr + 0x936130;
     // 通过 函数名映射得到 地址指针
+    // - 测试结果 可行
     // void *addr = DobbySymbolResolver(nullptr,"_ZN7BaseApp4DrawEv");// ?/help
     sleep(1);
     if (hack_addr) {
