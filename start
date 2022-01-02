@@ -1,9 +1,6 @@
 gradlew clean
 gradlew assembleRelease
-adb shell rm /data/local/tmp/SsageHook-v26.0.0-release.zip
-adb push /Users/hongqing/AndroidStudioProjects/Riru-ModuleTemplate/out/SsageHook-v26.0.0-release.zip /data/local/tmp
-adb push /Users/hongqing/AndroidStudioProjects/Riru-ModuleTemplate/out/SsageHook-v26.0.0-release.zip /data/local/tmp
-adb shell su -c magisk --install-module /data/local/tmp/SsageHook-v26.0.0-release.zip
-adb shell rm /data/local/tmp/SsageHook-v26.0.0-release.zip
+adb push /Users/hongqing/AndroidStudioProjects/Riru-SsageHook/out/SsageHook-v1.0.0-release.zip /data/local/tmp
+adb shell su -c magisk --install-module /data/local/tmp/SsageHook-v1.0.0-release.zip
 adb reboot
 gradlew clean

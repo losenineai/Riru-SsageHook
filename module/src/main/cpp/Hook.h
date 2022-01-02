@@ -5,7 +5,9 @@
 #ifndef RIRU_SSAGEHOOK_HOOK_H
 #define RIRU_SSAGEHOOK_HOOK_H
 
-static int my_libtest_log_print(int prio, const char* tag, const char* fmt, ...);
+typedef unsigned long DWORD;
+
+void myImGUI();
 void *hack_thread(void *arg);
 
 

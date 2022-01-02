@@ -53,19 +53,14 @@ add_library(${MODULE_NAME} SHARED main.cpp # riru注入主程序
         ${CMAKE_CURRENT_BINARY_DIR}/config.cpp # 模块配置文件
         Hook.cpp # hook
         utilities/Tools.cpp # 添加工具支持
-        utilities/Gui.cpp # ImGui
-        utilities/GuiUtils.cpp # ImGui工具
-        utilities/Game.cpp # 游戏渲染
         include/And64InlineHook/And64InlineHook.cpp # 添加64位的hook支持
         include/Substrate/hde64.c
         include/Substrate/SubstrateDebug.cpp
         include/Substrate/SubstrateHook.cpp
         include/Substrate/SubstratePosixMemory.cpp # 添加32位的hook支持
-        include/Imgui/imgui.cpp # ImGui支持
-        include/KittyMemory/KittyMemory.cpp # 补充
         )
 
-target_link_libraries(${MODULE_NAME} log riru::riru android dobby  EGL GLESv2)
+target_link_libraries(${MODULE_NAME} log riru::riru android dobby)
 
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_custom_command(TARGET ${MODULE_NAME} POST_BUILD
