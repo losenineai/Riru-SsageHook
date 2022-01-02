@@ -12,7 +12,7 @@ void (*origOnGUI)();
 
 void myImGUI()
 {
-    LOGI("Hook OK");
+    LOGD("Hook OK");
     origOnGUI();
 }
 
@@ -30,7 +30,7 @@ void *hack_thread(void *arg)
 
     do {// 等待游戏初始化完成
         sleep(1);
-        LOGD("延迟进程");
+        LOGI("延迟进程");
     } while (!isLibraryLoaded(libName));// "il2cpp.so"已经完全加载
 
     // 开始进行 inlinehook

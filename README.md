@@ -1,141 +1,68 @@
-# Riru - Template
+# Riru-SsageHook
+---
+- 注入方面
+  调用了Riru来对Zygote进行注入
+    <details>
+    <summary>Zygote</summary>
 
-[Riru](https://github.com/RikkaApps/Riru) module template.
+  > 安卓下进程都是从Zygote fork的. <br>
+  > 当注入so到Zygote后,之后启动的进程就都会带有这个so. <br>
+  > 可以自己注入Zygote进程或者使用Riru这个模块. <br>
 
-## Build
+    </details>
 
-1. Rename `module.example.gradle` to `module.gradle`
-2. Replace module info in `module.gradle` (all lines end with "replace with yours")
-3. Write your codes
-4. Run gradle task `:module:assembleRelease` task from Android Studio or command line, zip will be saved in `out`.
+- Hook方面
 
-## File structure
+  - 首先,引用Android官方的一些资料
+    <details>
+    <summary>Android官方的一些资料</summary>
 
-A Riru module is a Magisk module, please read [Magisk module document](https://topjohnwu.github.io/Magisk/guides.html#magisk-modules) first.
+    > ---
+    > - 使用原生代码时,硬件很重要.NDK 提供各种 ABI 供您选择,可让您确保针对正确的架构和 CPU 进行编译.<br>
+    > - 不同的 Android 设备使用不同的 CPU,而不同的 CPU 支持不同的指令集.CPU 与指令集的每种组合都有专属的应用二进制接口 (ABI).<br>
+        >   您可以通过多种方式检查代码中的 CPU 功能,但每种方式都需要做出不同的取舍.<br>
+    > ---
+    > **支持的 ABI** <br>
+    > |ABI|支持的指令集|备注|
+    > |----|----|----|
+    > |armeabi-v7a|armeabi<br>Thumb-2<br>Thumb-2<br>VFPv3-D16|与 ARMv5/v6 设备不兼容|
+    > |arm64-v8a|AArch64||
+    > ---
+    > **注:**
+    > 由于本项目依赖于Riru对Zygote进行注入<br>
+    > 而Zygote只有真机拥有<br>
+    > 因此对于模拟器的x86构架所支持的abi进行省略<br>
+    > 有兴趣的请参考[Android官方资料](https://developer.android.com/ndk/guides/arch?hl=zh-cn)
+    >
+    > ---
+    > **ABI：使用预处理器的预定义宏** <br>
+    > 通常，在构建时使用 #if defined 及以下各项确定 ABI 最为方便：<br>
+    >   - 对于 32 位 ARM，使用 __arm__ <br>
+    >   - 对于 64 位 ARM，使用 __aarch64__ <br>
+    >   - 对于 32 位 X86，使用 __i386__ <br>
+    >   - 对于 64 位 X86，使用 __x86_64__ <br>
+    >
+    > 请注意：32 位 X86 称为 __i386__，而不是 __x86__，这可能与您预想的有所不同！<br>
+    >
+    > ---
 
-If the folder `$MODPATH/riru` exists, the module is considered as a Riru module. All files in `$MODPATH/riru/lib(64)` will be loaded by Riru.
+    </details>
 
-## API changes
+  - 而 inlinehook 显然和汇编指令集有不可分割的关联<br>
+    因此 对于 hook 我们需要根据 abi 的不同 <br>
+    再根据 汇编指令集的区别 分别使用不同的hook手法 <br>
 
-### API 26 (Riru v26)
+  - 对于32位进程 也就是 abi 为 armeabi-v7a 的
+    - 常见的汇编指令集合为 armeabi 的 arm 模式
+    - 以及 Thumb-2 的 Thumb 模式
 
-- Remove the support of pre-24 modules
-- `/data/adb/dev_random` is planned to be moved to another place in the next major version
-- Libraries in `/dev` do not have stacktrace, developers have to put so file into `/system`, Riru v26 makes this simpler
-  
-  Create an empty file, `libxxx` (no `.so` suffix), at `$MODPATH/riru/lib(64)`, Riru will try to load `/system/lib(64)/libxxx.so`
+  - 对于64位进程 也就是 abi 为 arm64-v8a 的
+    - 唯一的汇编指令集合为 AArch64 的 arm64 模式
 
-### API 25 (Riru v25)
-
-- Modules can be unloaded (see `main.cpp`)
-- `shouldSkipUid` is removed for API 25 modules
-
-### API 24 (Riru v24)
-
-- The Riru API version is unified with Riru version, now the API version is 24
-- The `/data/adb/riru/modules/<name>` folder is deprecated, modules only need to place library files in `$MODPATH/riru/lib(64)` (see `customize.sh` `post-fs-data.sh`)
-- The `init` function is called only once (see `main.cpp`)
-- It's recommended to place modules files in the Magisk module folder, zygote has permission read this folder directly (the path is passed through `init` function, see `main.cpp`)
-
-### API 10 (Riru v23)
-
-<details>
-  <summary><b>Background of rirud:</b></summary>
-
-  Riru v22.0 move config files to `/data/adb`, this makes patch SELinux rules a must. However Magisk's `sepolicy.rule` actually not work for maybe lots of devices. As the release of Riru v22.0, these people "suddenly" appears.
-
-  `sepolicy.rule` support was added from Magisk v20.2, a long time ago, no one report to Magisk 😒.
-
-  To workaround this "problem", "rirud" is introduced. It will be started by `post-fs-data.sh` and run a socket runs under `u:r:zygote:s0` context. All file operations can be done through this socket.
-</details>
+  - 在本项目中
+    - 针对armeabi-v7a的hook采用 Substrate hook体系
+    - 针对arm64-v8a的hook采用 [And64InlineHook](https://github.com/Rprop/And64InlineHook)
 
 
-From Riru v23, "read file" and "read dir" function are added for "rirud". Modules can use this to read files that zygote itself has not permission to access. Note, for hide purpose, "rirud" socket is only available before system_server is started.
-
-In order to give the module enough freedom (like how to allocate memory), there is no "API". The module needs to implement socket codes by itself.
-
-<details>
-
-  <summary><b>Pseudocode of read file:</b></summary>
-
-```
-socket(PF_UNIX, SOCK_STREAM)
-setup_sockaddr("rirud")
-
-write(ACTION_READ_FILE /* 4 */, sizeof(uint32))
-write(path_size, sizeof(uint32))
-write(path, path_size)
-
-errno = read(sizeof(int32_t)) // errno of "open" in "rirud"
-if (errno != 0) return
-
-bytes_count = read(sizeof(int32_t))
-
-if (bytes_count > 0) {
-  // file has size
-  // read total "bytes_count" bytes
-} else if (bytes_count == 0) {
-  // file has no size, read until 0
-  // read until 0
-}
-```
-
-</details>
-
-<details>
-
-  <summary><b>Pseudocode of read dir:</b></summary>
-
-```
-socket(PF_UNIX, SOCK_STREAM)
-setup_sockaddr("rirud")
-
-write(ACTION_READ_DIR /* 5 */, sizeof(uint32))
-write(path_size, sizeof(uint32))
-write(path, path_size)
-
-errno = read(sizeof(int32_t)) // errno of "opendir" in "rirud"
-if (errno != 0) return
-
-while (true) {
-  write(1 /* continue */, sizeof(uint8))
-
-  reply = read(sizeof(int32))
-  if (reply == -1) break // end
-  if (reply != 0) continue  // reply is errno of "readdir" in "rirud"
-
-  d_type = read(sizeof(uchar))
-  d_name = read(256)
-}
-```
-
-</details>
-
-Example implementation: <https://github.com/RikkaApps/Riru-LocationReportEnabler/commit/89b2e396efcd928121ba3d254b96af1560cfaf4d>
-
-### API 9 (Riru v22)
-
-#### API
-
-Functions like `nativeForkAnd...` do not need to be exported directly. The only function to export is `void *init(void *)`. See the comment of `init` and template's implementation for more.
-
-This has these advantages:
-
-* Module can support different Riru versions
-* Riru itself will not relay on ".prop" file (unreliable) to get module information
-
-#### Riru
-
-Starting v22.0, Riru has switched to "native bridge" (`ro.dalvik.vm.native.bridge`) to inject zygote, this will lead Riru and modules be loaded later ([`LoadNativeBridge`](https://cs.android.com/android/platform/superproject/+/android-11.0.0_r1:art/libnativebridge/native_bridge.cc;l=227) vs `__attribute__((constructor))`).
-
-For most modules, this should have no problem, but modules like Xposed frameworks may have to make changes.
-
-> Magisk may provider Riru-like features in the far future, and of course, it will have more strict restrictions, module codes will not be run in zygote. Maybe Xposed framework modules should prepare for this?
-
-Riru v22 also provides hide function to make the memory of the module to anonymous memory ([see the implementation](https://github.com/RikkaApps/Riru/blob/master/core/src/main/cpp/hide.cpp)). This is an opt-in behavior (`module->supportHide`) and Riru itself also has a global toggle (`/data/adb/riru/enable_hide`).
-
-#### Module installer
-
-`RIRU_PATH` has been changed to `/data/adb/riru` for hide purpose. If you have other files in `/data/misc/riru`, move them here (or anywhere else if you want).
-
-Note `/data/adb/riru` have the same SELinux like other Magisk files (set by Riru in post-fs-data), `u:object_r:magisk_file:s0`. DO NOT reset the context to something else.
+---
+Made By SsageParuders

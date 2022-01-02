@@ -3,17 +3,16 @@
 //
 
 #include "Gui.h"
-#include "log.h"
-
-#include "Gui.h"
 #include "GuiUtils.h"
 #include "log.h"
+#include "Game.h"
 
 #define MULT_X	0.00052083333f	// 1/1920
 #define MULT_Y	0.00092592592f 	// 1/1080
 
 extern Game* g_Game;
 
+// Gui 的构造函数
 Gui::Gui() {
     m_initialized = false;
     m_screenSize = { 0.0, 0.0 };
@@ -23,6 +22,8 @@ Gui::Gui() {
     m_needClearMousePos = true;
 }
 
+
+// Gui 的析构函数
 Gui::~Gui() {
     // Cleanup
     ImGui_ImplOpenGL3_Shutdown();
@@ -30,6 +31,7 @@ Gui::~Gui() {
     m_initialized = false;
 }
 
+// 初始化 ImGui 布局
 void Gui::Init() {
     if (m_initialized) {
         return;
@@ -37,7 +39,7 @@ void Gui::Init() {
 
     LOGD("Initializing Gui..");
 
-    // Setup Dear ImGui context
+    // 设置 ImGui 内容
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -53,9 +55,9 @@ void Gui::Init() {
     // FIXME: Consider using LoadIniSettingsFromMemory() / SaveIniSettingsToMemory() to save in appropriate location for Android.
     io.IniFilename = nullptr;
 
-    // Setup Dear ImGui style
-    // ImGui::StyleColorsDark(); // it will make style colors classic
-    ImGui::StyleColorsClassic(); // it will make style colors dark
+    // 设置 ImGui 风格
+    // ImGui::StyleColorsDark(); // 暗黑风格
+    ImGui::StyleColorsClassic(); // 经典风格
 
     // Setup Renderer backends
     ImGui_ImplOpenGL3_Init();
@@ -100,6 +102,7 @@ void Gui::Init() {
     m_initialized = true;
 }
 
+// 渲染
 void Gui::Render() {
     if (!m_initialized) {
         return;
@@ -110,16 +113,16 @@ void Gui::Render() {
 
     ImGuiIO& io = ImGui::GetIO();
 
-    // Start the Dear ImGui frame
+    // 启动 ImGui 框架
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
 
-    // Render game hack imgui window
-    if (g_Game) {
+    // 渲染 游戏 注入 ImGui 窗口
+    if (g_Game) {// 重点
         g_Game->HackRender();
     }
 
-    // Rendering
+    // 渲染中
     ImGui::EndFrame();
     ImGui::Render();
     glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
@@ -137,6 +140,7 @@ void Gui::Render() {
     }
 }
 
+// 触摸事件
 void Gui::OnTouchEvent(int type, bool multi, float x, float y) {
     if (!m_initialized) {
         m_sendOnTouchEvent = 1;
