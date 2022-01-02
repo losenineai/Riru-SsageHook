@@ -53,11 +53,6 @@ add_library(${MODULE_NAME} SHARED main.cpp # riru注入主程序
         ${CMAKE_CURRENT_BINARY_DIR}/config.cpp # 模块配置文件
         Hook.cpp # hook
         utilities/Tools.cpp # 添加工具支持
-        include/And64InlineHook/And64InlineHook.cpp # 添加64位的hook支持
-        include/Substrate/hde64.c
-        include/Substrate/SubstrateDebug.cpp
-        include/Substrate/SubstrateHook.cpp
-        include/Substrate/SubstratePosixMemory.cpp # 添加32位的hook支持
         )
 
 target_link_libraries(${MODULE_NAME} log riru::riru android dobby)

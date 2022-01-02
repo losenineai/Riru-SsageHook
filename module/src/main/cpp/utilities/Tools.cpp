@@ -108,12 +108,3 @@ bool isLibraryLoaded(const char *libraryName) {
     }
     return false;
 }
-
-void myHook(void *orig_fcn, void* new_fcn, void **orig_fcn_ptr)
-{
-#if defined(__aarch64__)
-    A64HookFunction(orig_fcn, new_fcn, orig_fcn_ptr);
-#elif defined(__arm__)
-    MSHookFunction(orig_fcn, new_fcn, orig_fcn_ptr);
-#endif
-}

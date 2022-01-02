@@ -23,11 +23,7 @@
 
 #include "config.h"
 #include "log.h"
-#if defined (__aarch64__) // 对64位hook的支持
-#include "And64InlineHook/And64InlineHook.hpp"
-#elif defined(__arm__) // 对32位hook的支持
-#include "Substrate/CydiaSubstrate.h"
-#endif
+
 
 static int enable_hack;
 static char *game_data_dir = NULL;
@@ -36,6 +32,5 @@ int isGame(JNIEnv *env, jstring appDataDir);// 判断目标程序
 uint64_t getModuleBase(const char* module_name);// 获取模块地址
 uint64_t getBssModuleBase(const char* module_name);// 获取模块bss地址
 bool isLibraryLoaded(const char *libraryName);// 判断so是否加载
-void myHook(void *orig_fcn, void* new_fcn, void **orig_fcn_ptr);// 32位&64位native层hook支持
 
 #endif //RIRU_SSAGEHOOK_TOOLS_H
