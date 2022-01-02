@@ -8,34 +8,30 @@
 const char* libName = "libil2cpp.so";
 
 int (*old_puts)(const char *) = nullptr;
-static int (*orig_log_print)(int prio, const char* tag, const char* fmt, ...);
+void (*origOnGUI)();
 
-static int my_libtest_log_print(int prio, const char* tag, const char* fmt, ...)
+void myImGUI()
 {
-    va_list ap;
-    char buf[1024];
-    int r;
-
-    snprintf(buf, sizeof(buf), "[%s] %s", (NULL == tag ? "" : tag), (NULL == fmt ? "" : fmt));
-
-    va_start(ap, fmt);
-    r = __android_log_vprint(prio, "SSAGEHOOK_hookIsOk", buf, ap);
-    va_end(ap);
-    return r;
+    LOGI("Hook OK");
+    origOnGUI();
 }
 
+/*
+ * 测试hook应当以稳定的app为例
+ * 这里暂时以32位的国服为例
+ */
 void *hack_thread(void *arg)
 {
-    LOGD("非法入侵进程 :%d", gettid());
+    LOGD("注入进程 :%d", gettid());
 
-    LOGD("开始非法入侵游戏");
+    LOGD("开始注入游戏");
 
     // 填写注入内容
 
     do {// 等待游戏初始化完成
         sleep(1);
         LOGD("延迟进程");
-    } while (!isLibraryLoaded(libName));
+    } while (!isLibraryLoaded(libName));// "il2cpp.so"已经完全加载
 
     // 开始进行 inlinehook
 
@@ -57,12 +53,12 @@ void *hack_thread(void *arg)
      * 关注热度较高 整个框架更新频繁 活力十足
      * 未来较有发展前景 目前存在一部分小bug
      */
-    void *addr = DobbySymbolResolver(nullptr,"__android_log_print");
+    void *addr = DobbySymbolResolver(nullptr,"OnGUI");
     if (addr) {
-        LOGI("do_dlopen at: %p", addr);
-        DobbyHook(addr, (void *) my_libtest_log_print, (void **) &orig_log_print);
+        LOGI("打开函数于 : %p", addr);
+        DobbyHook(addr, (void *) myImGUI, (void **) &origOnGUI);
     }
 
-    LOGD("非法入侵游戏结束");
+    LOGD("注入游戏结束");
     return NULL;
 }

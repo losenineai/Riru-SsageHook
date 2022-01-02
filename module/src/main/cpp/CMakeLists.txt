@@ -8,6 +8,7 @@ else ()
     project(${MODULE_NAME})
 endif ()
 
+# 添加 Dobby 框架
 set(DobbyHome include/Dobby)
 include_directories(
         ${DobbyHome}/include/
@@ -20,6 +21,7 @@ add_subdirectory(${DobbyHome} dobby)
 
 add_definitions(-DRIRU_MODULE)
 
+# 配置文件
 configure_file(template/config.cpp config.cpp)
 
 message("Build type: ${CMAKE_BUILD_TYPE}")
@@ -51,16 +53,17 @@ add_library(${MODULE_NAME} SHARED main.cpp # riru注入主程序
         ${CMAKE_CURRENT_BINARY_DIR}/config.cpp # 模块配置文件
         Hook.cpp # hook
         utilities/Tools.cpp # 添加工具支持
+        utilities/Gui.cpp # ImGui
+        utilities/GuiUtils.cpp # ImGui工具
         include/And64InlineHook/And64InlineHook.cpp # 添加64位的hook支持
         include/Substrate/hde64.c
         include/Substrate/SubstrateDebug.cpp
         include/Substrate/SubstrateHook.cpp
         include/Substrate/SubstratePosixMemory.cpp # 添加32位的hook支持
-#        include/Imgui/*.c*
-#        include/Imgui/*.h* # Imgui支持
+        include/Imgui/imgui.cpp # ImGui支持
         )
 
-target_link_libraries(${MODULE_NAME} log riru::riru android dobby)
+target_link_libraries(${MODULE_NAME} log riru::riru android dobby  EGL GLESv2)
 
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_custom_command(TARGET ${MODULE_NAME} POST_BUILD

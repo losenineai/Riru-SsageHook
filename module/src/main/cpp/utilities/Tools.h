@@ -2,8 +2,8 @@
 // Created by 泓清 on 2021/12/30.
 //
 
-#ifndef RIRU_SSAGEHOOK_LOG_H
-#define RIRU_SSAGEHOOK_LOG_H
+#ifndef RIRU_SSAGEHOOK_TOOLS_H
+#define RIRU_SSAGEHOOK_TOOLS_H
 
 #include <jni.h>
 #include <cstdio>
@@ -38,4 +38,4 @@ uint64_t getBssModuleBase(const char* module_name);// 获取模块bss地址
 bool isLibraryLoaded(const char *libraryName);// 判断so是否加载
 void myHook(void *orig_fcn, void* new_fcn, void **orig_fcn_ptr);// 32位&64位native层hook支持
 
-#endif //RIRU_SSAGEHOOK_LOG_H
+#endif //RIRU_SSAGEHOOK_TOOLS_H

@@ -1,8 +1,10 @@
 //
 // Created by 泓清 on 2022/1/1.
 //
+#pragma once
 
-#ifndef RIRU_MODULETEMPLATE_GUIUTILS_H
-#define RIRU_MODULETEMPLATE_GUIUTILS_H
-
-#endif //RIRU_MODULETEMPLATE_GUIUTILS_H
+namespace GuiUtils {
+    bool IsAnyScrollBarActive();
+    bool MouseOnImguiTitleBarWindow();
+    void ScrollWhenDraggingOnVoid();
+};

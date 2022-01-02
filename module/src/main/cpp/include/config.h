@@ -8,5 +8,5 @@ namespace riru {
 }
 
 // 设置目标包名
-//static const char* GamePackageName = "com.xiaoyou.ToramOnline";// 典型32位进程
-static const char* GamePackageName = "com.asobimo.toramonline";// 典型64位进程
+static const char* GamePackageName = "com.xiaoyou.ToramOnline";// 典型32位进程
+//static const char* GamePackageName = "com.asobimo.toramonline";// 典型64位进程
