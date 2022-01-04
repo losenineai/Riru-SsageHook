@@ -27,11 +27,9 @@
     > |----|----|----|
     > |armeabi-v7a|armeabi<br>Thumb-2<br>Thumb-2<br>VFPv3-D16|与 ARMv5/v6 设备不兼容|
     > |arm64-v8a|AArch64||
+    > |x86|x86 (IA-32)<br>MMX<br>SSE/2/3<br>SSSE3<br>|不支持 MOVBE 或 SSE4|
+    > |x86_64|x86-64<br>MMX<br>SSE/2/3<br>SSSE3<br>SSE4.1、4.2<br>POPCNT||
     > ---
-    > **注:**
-    > 由于本项目依赖于Riru对Zygote进行注入<br>
-    > 而Zygote只有真机拥有<br>
-    > 因此对于模拟器的x86构架所支持的abi进行省略<br>
     > 有兴趣的请参考[Android官方资料](https://developer.android.com/ndk/guides/arch?hl=zh-cn)
     >
     > ---
@@ -60,8 +58,7 @@
     - 唯一的汇编指令集合为 AArch64 的 arm64 模式
 
   - 在本项目中
-    - 针对armeabi-v7a的hook采用 Substrate hook体系
-    - 针对arm64-v8a的hook采用 [And64InlineHook](https://github.com/Rprop/And64InlineHook)
+    - 采用一个跨平台 inlinehook 框架 Dobby(https://github.com/jmpews/Dobby)
 
 
 ---
