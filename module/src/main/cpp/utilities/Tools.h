@@ -25,6 +25,7 @@
 #include "log.h"
 
 
+
 static int enable_hack;
 static char *game_data_dir = NULL;
 

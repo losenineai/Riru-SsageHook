@@ -13,7 +13,8 @@ void (*origOnGUI)();
 
 void myImGUI()
 {
-    LOGD("Hook1 OK");
+    LOGD("Hook OK");
+
     return origOnGUI();
 }
 
@@ -53,7 +54,9 @@ void *hack_thread(void *arg)
     unsigned long hack_addr = base_addr + 0x936130;
     // 通过 函数名映射得到 地址指针
     // - 测试结果 可行
-    // void *addr = DobbySymbolResolver(nullptr,"_ZN7BaseApp4DrawEv");// ?/help
+
+    // void *addr = DobbySymbolResolver(nullptr,"_ZN7BaseApp4DrawEv");//
+
     sleep(1);
     if (hack_addr) {
         LOGI("打开函数于 : %lx", hack_addr);
