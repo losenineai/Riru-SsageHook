@@ -21,11 +21,11 @@ add_subdirectory(${DobbyHome} dobby)
 
 # 添加 hello_imgui 框架
 # 添加 glfw 库
-add_subdirectory(glfw)
-# 指示 hello_imgui 可使用 glfw 库
-set(HELLOIMGUI_USE_GLFW_OPENGL3 ON CACHE BOOL "" FORCE)
-# 添加 hello_imgui
-add_subdirectory(include/hello_imgui)
+#add_subdirectory(glfw)
+## 指示 hello_imgui 可使用 glfw 库
+#set(HELLOIMGUI_USE_GLFW_OPENGL3 ON CACHE BOOL "" FORCE)
+## 添加 hello_imgui
+#add_subdirectory(include/hello_imgui)
 
 add_definitions(-DRIRU_MODULE)
 
