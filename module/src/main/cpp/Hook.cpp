@@ -14,7 +14,6 @@ void (*origOnGUI)();
 void myImGUI()
 {
     LOGD("Hook OK");
-
     return origOnGUI();
 }
 
