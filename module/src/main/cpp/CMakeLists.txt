@@ -66,7 +66,16 @@ add_library(${MODULE_NAME} SHARED main.cpp # riru注入主程序
         ${CMAKE_CURRENT_BINARY_DIR}/config.cpp # 模块配置文件
         Hook.cpp # hook
         utilities/Tools.cpp # 添加工具支持
+        utilities/GuiLib.cpp
+        utilities/GuiUtils.cpp
+
+        include/imgui/imgui_draw.cpp
+        include/imgui/imgui_widgets.cpp
+        include/imgui/imgui_tables.cpp
+        include/imgui/imgui_impl_opengl3.cpp
         include/imgui/imgui.cpp # 添加imgui支持
+        include/imgui/imgui_internal.h
+
         )
 
 target_include_directories(${MODULE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/imgui)

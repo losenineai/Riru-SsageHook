@@ -4,9 +4,10 @@
 
 #include "utilities/Tools.h"
 #include "Hook.h"
-#include "imgui/imgui.h"
-#include <imgui_impl_opengl3.h>
+#include "utilities/GuiLib.h"
 
+bool g_initialized = false;
+Gui* g_Gui = nullptr;
 const char* libName = "libgrowtopia.so";
 
 unsigned long base_addr;
@@ -15,22 +16,22 @@ void (*origOnGUI)(void* thiz);
 
 void myImGUI(void* thiz)
 {
-    LOGD("Hook OK");
-    // TODO: 第一步 在代码中简单实现画面即可
     origOnGUI(thiz); // 进行原画面渲染 - 此步必须 然则崩溃
-    IMGUI_CHECKVERSION(); //
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    io.DisplaySize = ImVec2(50, 50);
-    io.IniFilename = nullptr;
-    ImGui::StyleColorsClassic();
-    // Setup Renderer backends
-    ImGui_ImplOpenGL3_Init();
 
-    ImFontConfig font_cfg;
-    font_cfg.SizePixels = 22.0f;
-    io.Fonts->AddFontDefault(&font_cfg);
-    ImGui::GetStyle().ScaleAllSizes(3.0f);
+    // TODO: 第一步 在代码中简单实现画面即可
+
+    // TODO: 初始化
+    if (!g_initialized) {
+        LOGD("Hook OK");
+        g_Gui = new Gui;
+        g_Gui->Init();
+        g_initialized = true;
+    }
+
+    // TODO: 渲染
+    if (g_Gui) {
+        g_Gui->Render();
+    }
 
 }
 
