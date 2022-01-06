@@ -4,17 +4,34 @@
 
 #include "utilities/Tools.h"
 #include "Hook.h"
+#include "imgui/imgui.h"
+#include <imgui_impl_opengl3.h>
 
 const char* libName = "libgrowtopia.so";
 
 unsigned long base_addr;
 
-void (*origOnGUI)();
+void (*origOnGUI)(void* thiz);
 
-void myImGUI()
+void myImGUI(void* thiz)
 {
     LOGD("Hook OK");
-    return origOnGUI();
+    // TODO: 第一步 在代码中简单实现画面即可
+    origOnGUI(thiz); // 进行原画面渲染 - 此步必须 然则崩溃
+    IMGUI_CHECKVERSION(); //
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.DisplaySize = ImVec2(50, 50);
+    io.IniFilename = nullptr;
+    ImGui::StyleColorsClassic();
+    // Setup Renderer backends
+    ImGui_ImplOpenGL3_Init();
+
+    ImFontConfig font_cfg;
+    font_cfg.SizePixels = 22.0f;
+    io.Fonts->AddFontDefault(&font_cfg);
+    ImGui::GetStyle().ScaleAllSizes(3.0f);
+
 }
 
 void *hack_thread(void *arg)
@@ -53,14 +70,13 @@ void *hack_thread(void *arg)
     unsigned long hack_addr = base_addr + 0x936130;
     // 通过 函数名映射得到 地址指针
     // - 测试结果 可行
-
-    // void *addr = DobbySymbolResolver(nullptr,"_ZN7BaseApp4DrawEv");//
+    // void *addr = DobbySymbolResolver(nullptr,"_ZN7BaseApp4DrawEv");
 
     sleep(1);
     if (hack_addr) {
         LOGI("打开函数于 : %lx", hack_addr);
         DobbyHook((void *)hack_addr, (void *)myImGUI, (void **) &origOnGUI) == RS_SUCCESS ?
-        LOGD("Success Hook at %lx", hack_addr) : LOGE("Fail Hook at %lx", hack_addr);
+        LOGD("成功 Hook 于 %lx", hack_addr) : LOGE("失败 Hook 于 %lx", hack_addr);
     }
 
     LOGD("注入游戏结束");

@@ -24,14 +24,7 @@ SET_OPTION(DOBBY_GENERATE_SHARED OFF)
 add_subdirectory(${DobbyHome} dobby)
 
 # 查询并导入第三方库
-find_package(SDL2 REQUIRED)
 find_package(riru REQUIRED CONFIG)
-
-
-
-
-
-
 
 # 定义宏
 add_definitions(-DRIRU_MODULE)
@@ -73,7 +66,10 @@ add_library(${MODULE_NAME} SHARED main.cpp # riru注入主程序
         ${CMAKE_CURRENT_BINARY_DIR}/config.cpp # 模块配置文件
         Hook.cpp # hook
         utilities/Tools.cpp # 添加工具支持
+        include/imgui/imgui.cpp # 添加imgui支持
         )
+
+target_include_directories(${MODULE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/imgui)
 
 # 连接其他库
 target_link_libraries(${MODULE_NAME}

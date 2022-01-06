@@ -7,7 +7,7 @@
 
 typedef unsigned long DWORD;
 
-void myImGUI();
+void myImGUI(void* thiz);
 void *hack_thread(void *arg);
 
 
