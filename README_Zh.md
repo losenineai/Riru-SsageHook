@@ -59,7 +59,7 @@
 
   - 在本项目中
     - 采用一个跨平台 inlinehook 框架 [Dobby](https://github.com/jmpews/Dobby)
-
+    - 使用 [KittyMemory](https://github.com/MJx0/KittyMemory) 作为内存补充工具
 
 ---
 泓清作

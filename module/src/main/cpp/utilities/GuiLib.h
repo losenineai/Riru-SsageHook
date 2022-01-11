@@ -10,6 +10,10 @@
 #include "imgui_internal.h"
 #include "imgui_impl_opengl3.h"
 #include <GLES2/gl2.h>
+#include "KittyMemory/KittyMemory.hpp"
+#include "KittyMemory/MemoryBackup.hpp"
+#include "KittyMemory/MemoryPatch.hpp"
+#include "../utilities/Tools.h"
 #endif
 
 class Gui {

@@ -2,8 +2,6 @@
 #include "GuiLib.h"
 #include "log.h"
 
-bool Test = false;
-
 bool GuiUtils::IsAnyScrollBarActive() {
     ImGuiWindow *window = ImGui::GetCurrentWindow();
     ImGuiID active_id = ImGui::GetActiveID();
@@ -60,18 +58,42 @@ void GuiShow::HackRender() {
     }
 
     // Checkbox
-    ImGui::Checkbox("Checkbox One", &Test);
-//    ModFly(m_gameHackState.ModFlyChecked);
+    ImGui::Checkbox("Checkbox One", &m_gameHackState.ModFlyChecked);
+    ModFly(m_gameHackState.ModFlyChecked);
 
-    ImGui::Checkbox("Checkbox Two", &Test);
-//    AntiCheckpoint(m_gameHackState.AntiCheckpointChecked);
+    ImGui::Checkbox("Checkbox Two", &m_gameHackState.AntiCheckpointChecked);
+    AntiCheckpoint(m_gameHackState.AntiCheckpointChecked);
 
-    ImGui::Checkbox("Checkbox Three", &Test);
-//    AntiCheckpoint(m_gameHackState.FastFallChecked);
+    ImGui::Checkbox("Checkbox Three", &m_gameHackState.FastFallChecked);
+    AntiCheckpoint(m_gameHackState.FastFallChecked);
 
     // 滚动而不按滚动条
     GuiUtils::ScrollWhenDraggingOnVoid();
 
     // 结束 ImGui 窗口
     ImGui::End();
+}
+
+void GuiShow::ModFly(bool checked) {
+    static bool old = false;
+    if (old != checked) {
+        checked ? m_gameHack.ModFly.Modify() : m_gameHack.ModFly.Restore();
+        old = checked;
+    }
+}
+
+void GuiShow::AntiCheckpoint(bool checked) {
+    static bool old = false;
+    if (old != checked) {
+        checked ? m_gameHack.AntiCheckpoint.Modify() : m_gameHack.AntiCheckpoint.Restore();
+        old = checked;
+    }
+}
+
+void GuiShow::FastFall(bool checked) {
+    static bool old = false;
+    if (old != checked) {
+        checked ? m_gameHack.FastFall.Modify() : m_gameHack.FastFall.Restore();
+        old = checked;
+    }
 }

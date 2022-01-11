@@ -80,6 +80,14 @@ add_library(${MODULE_NAME} SHARED main.cpp # riru注入主程序
         include/imgui/imstb_rectpack.h
         include/imgui/imstb_textedit.h
         include/imgui/imstb_truetype.h
+        include/KittyMemory/KittyMemory.cpp # 附加工具
+        include/KittyMemory/KittyUtils.cpp
+        include/KittyMemory/KittyMemory.hpp
+        include/KittyMemory/KittyUtils.hpp
+        include/KittyMemory/MemoryBackup.cpp
+        include/KittyMemory/MemoryBackup.hpp
+        include/KittyMemory/MemoryPatch.cpp
+        include/KittyMemory/MemoryPatch.hpp
         )
 
 target_include_directories(${MODULE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/imgui)

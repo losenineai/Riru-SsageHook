@@ -6,7 +6,6 @@
 #include "GuiUtils.h"
 #include "log.h"
 
-
 #define MULT_X	0.00052083333f	// 1/1920
 
 #define MULT_Y	0.00092592592f 	// 1/1080
@@ -44,7 +43,14 @@ void Gui::Init() {
     ImGuiIO& io = ImGui::GetIO();
 
     // TODO: 完善参数支持
-    io.DisplaySize = ImVec2(500,500);
+    do {
+        void *addr1 = DobbySymbolResolver(NULL,"_Z15GetScreenSizeXfv");
+        void *addr2 = DobbySymbolResolver(NULL,"_Z15GetScreenSizeYfv");
+        Gui::m_screenSize.x = KittyMemory::callFunction<float>(addr1);
+        Gui::m_screenSize.y = KittyMemory::callFunction<float>(addr2);
+    } while (Gui::m_screenSize.x == 0.0 || Gui::m_screenSize.y == 0.0);
+
+    io.DisplaySize = ImVec2(Gui::m_screenSize.x, Gui::m_screenSize.y);
 
     // Disable loading/saving of .ini file from disk.
     // FIXME: Consider using LoadIniSettingsFromMemory() / SaveIniSettingsToMemory() to save in appropriate location for Android.
