@@ -6,12 +6,15 @@
 #include "GuiUtils.h"
 #include "log.h"
 
+
 #define MULT_X	0.00052083333f	// 1/1920
+
 #define MULT_Y	0.00092592592f 	// 1/1080
 
-bool Test = false;
+extern GuiShow* g_Show;
 
 Gui::Gui() {
+    // 构建函数
     m_initialized = false;
     m_screenSize = { 0.0, 0.0 };
     m_sendOnTouchEvent = 0;
@@ -21,28 +24,24 @@ Gui::Gui() {
 }
 
 Gui::~Gui() {
-    // Cleanup
+    // 析构函数
     ImGui_ImplOpenGL3_Shutdown();
     ImGui::DestroyContext();
     m_initialized = false;
 }
 
 void Gui::Init() {
+
     if (m_initialized) {
         return;
     }
 
-    LOGD("Initializing Gui..");
+    LOGD("开始初始化ImGui ...");
 
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
+    // 开始设置 ImGui 内容
+    IMGUI_CHECKVERSION(); // 检测版本
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
-
-//    do {
-//        Gui::m_screenSize.x = KittyMemory::callFunction<float>(GTS("_Z15GetScreenSizeXfv"));
-//        Gui::m_screenSize.y = KittyMemory::callFunction<float>(GTS("_Z15GetScreenSizeYfv"));
-//    } while (Gui::m_screenSize.x == 0.0 || Gui::m_screenSize.y == 0.0);
 
     // TODO: 完善参数支持
     io.DisplaySize = ImVec2(500,500);
@@ -51,54 +50,32 @@ void Gui::Init() {
     // FIXME: Consider using LoadIniSettingsFromMemory() / SaveIniSettingsToMemory() to save in appropriate location for Android.
     io.IniFilename = nullptr;
 
-    // Setup Dear ImGui style
-    // ImGui::StyleColorsDark(); // it will make style colors classic
-    ImGui::StyleColorsClassic(); // it will make style colors dark
+    // 设置ImGui风格
+    // ImGui::StyleColorsDark(); // 经典风格
+    ImGui::StyleColorsClassic(); // 暗黑风格
 
-    // Setup Renderer backends
+    // 设置渲染引擎
     ImGui_ImplOpenGL3_Init();
 
-    // Load Fonts
-    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
-    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-    // - Read 'docs/FONTS.md' for more instructions and details.
-    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    // - Android: The TTF files have to be placed into the assets/ directory (android/app/src/main/assets), we use our GetAssetData() helper to retrieve them.
-
+    // 设置字库 TODO: 暂时不支持中文字库 将来支持
     // We load the default font with increased size to improve readability on many devices with "high" DPI.
     // FIXME: Put some effort into DPI awareness.
     // Important: when calling AddFontFromMemoryTTF(), ownership of font_data is transfered by Dear ImGui by default (deleted is handled by Dear ImGui), unless we set FontDataOwnedByAtlas=false in ImFontConfig
     ImFontConfig font_cfg;
     font_cfg.SizePixels = 22.0f;
     io.Fonts->AddFontDefault(&font_cfg);
-    //void* font_data;
-    //int font_data_size;
-    //ImFont* font;
-    //font_data_size = GetAssetData("Roboto-Medium.ttf", &font_data);
-    //font = io.Fonts->AddFontFromMemoryTTF(font_data, font_data_size, 16.0f);
-    //IM_ASSERT(font != NULL);
-    //font_data_size = GetAssetData("Cousine-Regular.ttf", &font_data);
-    //font = io.Fonts->AddFontFromMemoryTTF(font_data, font_data_size, 15.0f);
-    //IM_ASSERT(font != NULL);
-    //font_data_size = GetAssetData("DroidSans.ttf", &font_data);
-    //font = io.Fonts->AddFontFromMemoryTTF(font_data, font_data_size, 16.0f);
-    //IM_ASSERT(font != NULL);
-    //font_data_size = GetAssetData("ProggyTiny.ttf", &font_data);
-    //font = io.Fonts->AddFontFromMemoryTTF(font_data, font_data_size, 10.0f);
-    //IM_ASSERT(font != NULL);
-    //font_data_size = GetAssetData("ArialUni.ttf", &font_data);
-    //font = io.Fonts->AddFontFromMemoryTTF(font_data, font_data_size, 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != NULL);
 
-    // Arbitrary scale-up
+    // 任意扩大
     // FIXME: Put some effort into DPI awareness
     ImGui::GetStyle().ScaleAllSizes(3.0f);
 
+
+    // 初始化结束
     m_initialized = true;
 }
 
 void Gui::Render() {
+    // 确认是否初始化
     if (!m_initialized) {
         return;
     }
@@ -108,38 +85,16 @@ void Gui::Render() {
 
     ImGuiIO& io = ImGui::GetIO();
 
-    // Start the Dear ImGui frame
+    // 开始 ImGui 框架
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
 
-    // Render game hack imgui window
-    // TODO: 完善过程
-    // Begin imgui window
-    ImGui::Begin("Growtopia", nullptr, ImGuiWindowFlags_NoResize);
-
-    // Make only move if the mouse pos on title bar
-    if (GuiUtils::MouseOnImguiTitleBarWindow()) {
-        ImGuiContext& g = *GImGui;
-        g.MovingWindow = nullptr;
+    // 渲染游戏 ImGui 窗口
+    if (g_Show){
+        g_Show->HackRender();
     }
 
-    // Checkbox
-    ImGui::Checkbox("Mod Fly", &Test);
-//    ModFly(m_gameHackState.ModFlyChecked);
-
-    ImGui::Checkbox("Anti Checkpoint", &Test);
-//    AntiCheckpoint(m_gameHackState.AntiCheckpointChecked);
-
-    ImGui::Checkbox("Fast Fall", &Test);
-//    AntiCheckpoint(m_gameHackState.FastFallChecked);
-
-    // Scrolling without press ScrollBar
-    GuiUtils::ScrollWhenDraggingOnVoid();
-
-    // End imgui window
-    ImGui::End();
-
-    // Rendering
+    // 渲染ing
     ImGui::EndFrame();
     ImGui::Render();
     glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
@@ -155,8 +110,10 @@ void Gui::Render() {
         io.MousePos = ImVec2(-1, -1);
         m_needClearMousePos = false;
     }
+
 }
 
+// 响应触控事件
 void Gui::OnTouchEvent(int type, bool multi, float x, float y) {
     if (!m_initialized) {
         m_sendOnTouchEvent = 1;

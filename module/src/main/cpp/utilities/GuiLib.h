@@ -17,11 +17,15 @@ public:
     Gui();
     ~Gui();
 
+    // 初始化Gui
     void Init();
+    // 渲染Gui
     void Render();
+    // 触控事件回调
     void OnTouchEvent(int type, bool multi, float x, float y);
 
 private:
+    // 触控类型枚举
     enum eTouchEvent {
         TOUCH_MOVE,
         TOUCH_POP,

@@ -68,14 +68,18 @@ add_library(${MODULE_NAME} SHARED main.cpp # riru注入主程序
         utilities/Tools.cpp # 添加工具支持
         utilities/GuiLib.cpp
         utilities/GuiUtils.cpp
-
+        include/imgui/imconfig.h # 添加imgui支持
+        include/imgui/imgui.cpp
+        include/imgui/imgui.h
         include/imgui/imgui_draw.cpp
+        include/imgui/imgui_impl_opengl3.cpp
+        include/imgui/imgui_impl_opengl3.h
+        include/imgui/imgui_internal.h
         include/imgui/imgui_widgets.cpp
         include/imgui/imgui_tables.cpp
-        include/imgui/imgui_impl_opengl3.cpp
-        include/imgui/imgui.cpp # 添加imgui支持
-        include/imgui/imgui_internal.h
-
+        include/imgui/imstb_rectpack.h
+        include/imgui/imstb_textedit.h
+        include/imgui/imstb_truetype.h
         )
 
 target_include_directories(${MODULE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/imgui)

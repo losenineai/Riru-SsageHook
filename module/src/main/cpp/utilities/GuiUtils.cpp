@@ -2,6 +2,8 @@
 #include "GuiLib.h"
 #include "log.h"
 
+bool Test = false;
+
 bool GuiUtils::IsAnyScrollBarActive() {
     ImGuiWindow *window = ImGui::GetCurrentWindow();
     ImGuiID active_id = ImGui::GetActiveID();
@@ -44,4 +46,32 @@ void GuiUtils::ScrollWhenDraggingOnVoid() {
             ImGui::SetScrollY(ImGui::GetScrollY() + -mouse_delta.y);
         }
     }
+}
+
+void GuiShow::HackRender() {
+
+    // 开始 ImGui 窗口
+    ImGui::Begin("SsageHook", nullptr, ImGuiWindowFlags_NoResize);
+
+    // 当鼠标停留在标题栏时 只移动鼠标
+    if (GuiUtils::MouseOnImguiTitleBarWindow()) {
+        ImGuiContext& g = *GImGui;
+        g.MovingWindow = nullptr;
+    }
+
+    // Checkbox
+    ImGui::Checkbox("Checkbox One", &Test);
+//    ModFly(m_gameHackState.ModFlyChecked);
+
+    ImGui::Checkbox("Checkbox Two", &Test);
+//    AntiCheckpoint(m_gameHackState.AntiCheckpointChecked);
+
+    ImGui::Checkbox("Checkbox Three", &Test);
+//    AntiCheckpoint(m_gameHackState.FastFallChecked);
+
+    // 滚动而不按滚动条
+    GuiUtils::ScrollWhenDraggingOnVoid();
+
+    // 结束 ImGui 窗口
+    ImGui::End();
 }
